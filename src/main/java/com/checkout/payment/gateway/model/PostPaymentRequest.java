@@ -1,41 +1,71 @@
 package com.checkout.payment.gateway.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import java.io.Serializable;
 
 public class PostPaymentRequest implements Serializable {
 
-  @JsonProperty("card_number_last_four")
-  private int cardNumberLastFour;
+  //@JsonProperty("card_number_last_four")
+  //private int cardNumberLastFour;
+
+  @NotBlank(message = "Card number is required")
+  @JsonProperty("card_number")
+  @Pattern(regexp = "^\\d{14,19}$", message = "Card number must be between 14-19 numeric characters")
+  private String cardNumber;
+
+  @NotNull(message = "Expiry month is required")
   @JsonProperty("expiry_month")
-  private int expiryMonth;
+  @Min(value = 1, message = "Expiry month must be between 1 and 12 (January to December)")
+  @Max(value = 12, message = "Expiry month must be between 1 and 12 (January to December)")
+  private Integer expiryMonth;
+
+  @NotNull(message = "Expiry year is required")
   @JsonProperty("expiry_year")
-  private int expiryYear;
+  private Integer expiryYear;
+
+  @NotBlank(message = "Currency is required")
+  @Pattern(regexp = "^(USD|EUR|GBP)$", message = "Currency must be one of USD, EUR, GBP")
   private String currency;
-  private int amount;
-  private int cvv;
 
-  public int getCardNumberLastFour() {
-    return cardNumberLastFour;
+  @NotNull(message = "Amount is required")
+  @Positive(message = "Amount must be a positive integer")
+  private Integer amount;
+
+  @NotBlank(message = "CVV is required")
+  @Pattern(regexp = "^\\d{3,4}$", message = "CVV must be 3 or 4 numeric characters")
+  private String cvv;
+
+  public String getCardNumber() {
+    return cardNumber;
   }
 
-  public void setCardNumberLastFour(int cardNumberLastFour) {
+  /*public void setCardNumberLastFour(int cardNumberLastFour) {
     this.cardNumberLastFour = cardNumberLastFour;
+  }*/
+
+  public void setCardNumber(String cardNumber) {
+    this.cardNumber = cardNumber;
   }
 
-  public int getExpiryMonth() {
+  public Integer getExpiryMonth() {
     return expiryMonth;
   }
 
-  public void setExpiryMonth(int expiryMonth) {
+  public void setExpiryMonth(Integer expiryMonth) {
     this.expiryMonth = expiryMonth;
   }
 
-  public int getExpiryYear() {
+  public Integer getExpiryYear() {
     return expiryYear;
   }
 
-  public void setExpiryYear(int expiryYear) {
+  public void setExpiryYear(Integer expiryYear) {
     this.expiryYear = expiryYear;
   }
 
@@ -47,19 +77,19 @@ public class PostPaymentRequest implements Serializable {
     this.currency = currency;
   }
 
-  public int getAmount() {
+  public Integer getAmount() {
     return amount;
   }
 
-  public void setAmount(int amount) {
+  public void setAmount(Integer amount) {
     this.amount = amount;
   }
 
-  public int getCvv() {
+  public String getCvv() {
     return cvv;
   }
 
-  public void setCvv(int cvv) {
+  public void setCvv(String cvv) {
     this.cvv = cvv;
   }
 
@@ -68,7 +98,7 @@ public class PostPaymentRequest implements Serializable {
     return String.format("%d/%d", expiryMonth, expiryYear);
   }
 
-  @Override
+  /*@Override
   public String toString() {
     return "PostPaymentRequest{" +
         "cardNumberLastFour=" + cardNumberLastFour +
@@ -78,5 +108,5 @@ public class PostPaymentRequest implements Serializable {
         ", amount=" + amount +
         ", cvv=" + cvv +
         '}';
-  }
+  }*/
 }
